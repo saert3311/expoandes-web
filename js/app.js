@@ -1,8 +1,3 @@
-/* Theme Name: zoric  - Responsive Business & Agency Template
-   Author: Themesdesign
-   File Description: Main JS file of the template
-*/
-
 
 /************** Menu Js**************/
 
