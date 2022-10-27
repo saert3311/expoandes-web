@@ -1,0 +1,30 @@
+body, .navbar-brand{
+    color: #11270B
+}
+
+.main-brand {
+    height: 200px;
+    width: auto;
+}
+.bg-home2{
+    background-image: url(../img/main_banner.jpg);
+}
+.home-dashboard{
+    border: none;
+}
+.video-wrapper{
+    max-height: 50vh;
+}
+.product-icon {
+    max-height: 55px;
+}
+.card-body > .modal-header{
+    padding:0;
+    border-bottom:none;
+}
+span.more-details{
+    cursor: pointer;
+}
+.bg-cta{
+    background-image: url(../img/cta_image.jpg);
+}
