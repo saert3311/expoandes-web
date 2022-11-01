@@ -3,36 +3,45 @@ $dotenv = Dotenv\Dotenv::createImmutable('../');
 $dotenv->load();
 
 $client = new \Contentful\Delivery\Client($_ENV['CONTENTFUL_KEY'], $_ENV['CONTENTFUL_SPACE']);
-$query = new \Contentful\Delivery\Query();
-$text_query = new \Contentful\Delivery\Query();
+$query = (new \Contentful\Delivery\Query())->orderBy('sys.updatedAt', false);;
+$text_query = (new \Contentful\Delivery\Query())->orderBy('sys.updatedAt', false);;
 
 $query->setContentType('galery');
 
 $products = $client->getEntries($query);
-if(isset($_GET['lang']))
-{
+if (isset($_GET['lang'])) {
     $text_query->setContentType('textos')->setLocale($_GET['lang']);
-}else {
+} else {
     $text_query->setContentType('textos');
 }
 
 $texts = $client->getEntries($text_query);
-function findTxt($id, $texts){
-    foreach ( $texts as $element ) {
-    if ( $id == $element->getName() ) {
-        return $element->getText();
+function findTxt($id, $texts)
+{
+    foreach ($texts as $element) {
+        if ($id == $element->getName()) {
+            return $element->getText();
+        }
     }
-}
-return false;
+    return false;
 }
 
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $_GET['lang'] ?>">
+<?php if (isset($_GET['lang'])) { ?>
+    <html lang="<?php echo $_GET['lang'] ?>">
+<?php } else { ?>
+    <html lang="es">
+<?php } ?>
+
 <head>
     <meta charset="utf-8" />
     <title>Exportadora y servicios forestales Andes Chile - Concepción</title>
-    <link rel="alternate" hreflang="en" href="http://expoandes.cl/?lang=en" />
+    <?php if (isset($_GET['lang'])) { ?>
+        <link rel="alternate" hreflang="es" href="http://expoandes.cl" />
+    <?php } else { ?>
+        <link rel="alternate" hreflang="en" href="http://expoandes.cl/?lang=en" />
+    <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="EXPOANDES, productos forestales de la más alta calidad" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -90,11 +99,11 @@ return false;
                         <a href="#contact" class="nav-link"><?php echo findTxt('contacto', $texts) ?></a>
                     </li>
                 </ul>
-                        <?php if(isset($_GET['lang'])){ ?>
-                            <a href="/" class="nav-link"><button class="btn btn-sm btn-outline-success" type="submit">ES</button></a>
-                        <?php }else { ?>
-                            <a href="?lang=en" class="nav-link"><button class="btn btn-sm btn-outline-success" type="submit">EN</button></a>
-                        <?php } ?>
+                <?php if (isset($_GET['lang'])) { ?>
+                    <a href="/" class="nav-link"><button class="btn btn-sm btn-outline-success" type="submit">ES</button></a>
+                <?php } else { ?>
+                    <a href="?lang=en" class="nav-link"><button class="btn btn-sm btn-outline-success" type="submit">EN</button></a>
+                <?php } ?>
             </div>
             <!--end navabar-collapse-->
         </div>
@@ -114,7 +123,7 @@ return false;
                         <p class="text-white-50 fs-17"><?php echo findTxt('banner2', $texts) ?></p>
                         <div class="mt-4">
                             <a href="https://wa.me/56978786979" class="btn btn-primary mt-2" target="_blank"><?php echo findTxt('btn-banner-1', $texts) ?></a>
-                            <a href="#" class="btn btn-outline-white mt-2 ms-md-1"><?php echo findTxt('btn-banner2', $texts) ?></a>
+                            <a href="#products" class="btn btn-outline-white mt-2 ms-md-1"><?php echo findTxt('btn-banner2', $texts) ?></a>
                         </div>
                     </div>
                 </div>
@@ -270,20 +279,20 @@ return false;
                 <div class="col-lg-12">
                     <div class="filters-group">
                         <ul class="nav filter-options list-unstyled list-inline justify-content-center">
-                            <li data-group="all" class="nav-link list-inline-item mt-2">
-                            <?php echo findTxt('all', $texts) ?></li>
-                            <li data-group="dimensioned" class="active nav-link list-inline-item mt-2">
-                            <?php echo findTxt('product-dimensioned-title', $texts) ?></li>
+                            <li data-group="all" class="active nav-link list-inline-item mt-2">
+                                <?php echo findTxt('all', $texts) ?></li>
+                            <li data-group="dimensioned" class="nav-link list-inline-item mt-2">
+                                <?php echo findTxt('product-dimensioned-title', $texts) ?></li>
                             <li data-group="tropical" class="nav-link list-inline-item mt-2">
-                            <?php echo findTxt('product-tropical-title', $texts) ?></li>
+                                <?php echo findTxt('product-tropical-title', $texts) ?></li>
                             <li data-group="boards" class="nav-link list-inline-item mt-2">
-                            <?php echo findTxt('product-boards-title', $texts) ?></li>
+                                <?php echo findTxt('product-boards-title', $texts) ?></li>
                             <li data-group="moldings" class="nav-link list-inline-item mt-2">
-                            <?php echo findTxt('product-moldings-title', $texts) ?></li>
+                                <?php echo findTxt('product-moldings-title', $texts) ?></li>
                             <li data-group="rental" class="nav-link list-inline-item mt-2">
-                            <?php echo findTxt('product-forklift-title', $texts) ?></li>
+                                <?php echo findTxt('product-forklift-title', $texts) ?></li>
                             <li data-group="imports" class="nav-link list-inline-item mt-2">
-                            <?php echo findTxt('product-imports-title', $texts) ?></li>
+                                <?php echo findTxt('product-imports-title', $texts) ?></li>
                         </ul>
                         <!--end portfolio-list-->
                     </div>
@@ -297,27 +306,27 @@ return false;
         <div class="container-fluid mt-5">
             <div class="row g-2" id="grid">
                 <?php foreach ($products as $product) { ?>
-                <div class="col-lg-3 col-md-6  picture-item" data-groups='["<?php echo $product -> getCategory() ?>"]'>
-                    <div class="portfolio-box rounded">
-                        <img class="img-fluid" src="<?php echo $product -> getPicture() ->getFile()->getUrl();?>" alt="Madera Dimensionada Expoandes" />
-                        <div class="portfolio-content">
-                            <div class="img-view">
-                                <a href="<?php echo $product -> getPicture() ->getFile()->getUrl();?>" class="text-muted image-popup"><i class="mdi mdi-plus"></i></a>
-                            </div>
-                            <div class="portfolio-caption">
-                                <a href="#" class="text-primary">
-                                    <h5 class="mb-1 fs-18"><?php echo $product -> get('title') ?></h5>
-                                </a>
+                    <div class="col-lg-3 col-md-6  picture-item" data-groups='["<?php echo $product->getCategory() ?>"]'>
+                        <div class="portfolio-box rounded">
+                            <img class="img-fluid" src="<?php echo $product->getPicture()->getFile()->getUrl(); ?>" alt="Madera Dimensionada Expoandes" />
+                            <div class="portfolio-content">
+                                <div class="img-view">
+                                    <a href="<?php echo $product->getPicture()->getFile()->getUrl(); ?>" class="text-muted image-popup"><i class="mdi mdi-plus"></i></a>
+                                </div>
+                                <div class="portfolio-caption">
+                                    <a href="#" class="text-primary">
+                                        <h5 class="mb-1 fs-18"><?php echo $product->get('title') ?></h5>
+                                    </a>
+                                </div>
                             </div>
                         </div>
+                        <!--end portfolio-box-->
                     </div>
-                    <!--end portfolio-box-->
-                </div>
-                <!--end col-->
+                    <!--end col-->
                 <?php } ?>
-            <!--end row-->
-        </div>
-        <!--end container-fluid-->
+                <!--end row-->
+            </div>
+            <!--end container-fluid-->
     </section>
     <!--end portfolio-->
     <!-- START CTA -->
@@ -362,7 +371,7 @@ return false;
 
                 <div class="col-lg-9">
                     <div class="custom-form">
-                        <form method="post" name="myForm" onsubmit="return validateForm()">
+                        <form name="contact-form" id="contact-form">
                             <p id="error-msg"></p>
                             <div class="row">
                                 <div class="col-lg-6">
@@ -374,7 +383,7 @@ return false;
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="email" class="form-label"><?php echo findTxt('telefono', $texts) ?></label>
-                                        <input type="tel" class="form-control" name="email" id="email" placeholder="<?php echo findTxt('your-phone', $texts) ?>">
+                                        <input type="tel" class="form-control" name="phone" id="email" placeholder="<?php echo findTxt('your-phone', $texts) ?>">
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -420,7 +429,7 @@ return false;
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="mt-3 text-end">
-                                        <input type="submit" id="submit" name="send" class="submitBnt btn btn-primary" value="<?php echo findTxt('enviar', $texts) ?>">
+                                        <input type="submit" id="submit_contact_form" name="send" class="submitBnt btn btn-primary" value="<?php echo findTxt('enviar', $texts) ?>">
                                         <div id="simple-msg"></div>
                                     </div>
                                 </div>
@@ -526,33 +535,34 @@ return false;
         <i class="mdi mdi-arrow-up-bold"></i>
     </button>
     <div class="modal fade" id="productDescriptionModal" tabindex="-1" aria-labelledby="productDescriptionModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-    <div class="card"">
-  <div class="row g-0">
-    <div class="col-md-1">
-      <img src="img/impotaciones_icon.png" alt="" class="img-fluid rounded-start product-icon" style="margin:1rem">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="card"">
+  <div class=" row g-0">
+                    <div class="col-md-1">
+                        <img src="img/impotaciones_icon.png" alt="" class="img-fluid rounded-start product-icon" style="margin:1rem">
+                    </div>
+                    <div class="col-md-11 ps-2">
+                        <div class="card-body">
+                            <div class="modal-header mb-2">
+                                <h5 class="modal-title" id="productDescriptionModalLabel"><?php echo findTxt('product-imports-title', $texts) ?></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <p class="card-text"><?php echo findTxt('product-imports-text-long', $texts) ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-11 ps-2">
-      <div class="card-body">
-      <div class="modal-header mb-2">
-        <h5 class="modal-title" id="productDescriptionModalLabel"><?php echo findTxt('product-imports-title', $texts) ?></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-        <p class="card-text"><?php echo findTxt('product-imports-text-long', $texts) ?></p>
-      </div>
     </div>
-  </div>
-</div>
-    </div>
-  </div>
-</div>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/glightbox.min.js"></script>
     <script src="js/shuffle.min.js"></script>
     <script src="js/gallery.init.js"></script>
     <script src="js/app.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeYsM4iAAAAABLcLi8kyUJ4h2XXpAWPts6WA7ju"></script>
     <script src="js/efac.js"></script>
 </body>
 
-</html>
+    </html>
