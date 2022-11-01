@@ -1,7 +1,6 @@
 "use strict";
 
-let contact_form =
-  document.getElementById("contact-form") 
+let contact_form = document.getElementById("contact-form") 
   function disable_form() {
     let elements = contact_form.elements;
     for (var i = 0, len = elements.length; i < len; ++i) {
