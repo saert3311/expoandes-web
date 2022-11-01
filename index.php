@@ -401,7 +401,7 @@ function findTxt($id, $texts)
 
                                 <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="product" class="form-label">Producto o servicio:</label>
+                                        <label for="product" class="form-label"><?php echo findTxt('product_service', $texts) ?></label>
                                         <select class="form-select form-control" aria-label="Select product" name="product">
                                             <option selected> -- </option>
                                             <option value="Madera Dimensionada"><?php echo findTxt('product-dimensioned-title', $texts) ?></option>
